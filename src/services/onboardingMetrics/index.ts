@@ -9,6 +9,14 @@ interface AnalyticsLike {
 
 let analyticsClient: AnalyticsLike | null = null;
 
+// TODO(LOBE-7801): wire this setter from the app bootstrap provider.
+// The picker runtime's `onShown` / `onPicked` hooks already call the `track*`
+// functions below, but without a configured analytics client they no-op.
+// Options for follow-up:
+//   - Inject via a top-level React provider that reads useAnalytics() and
+//     calls setOnboardingAnalyticsClient at mount.
+//   - Or, move to a per-call options pattern matching onboardingFeedback.ts.
+// Until wired, telemetry events are silently dropped.
 export const setOnboardingAnalyticsClient = (client: AnalyticsLike | null): void => {
   analyticsClient = client;
 };
