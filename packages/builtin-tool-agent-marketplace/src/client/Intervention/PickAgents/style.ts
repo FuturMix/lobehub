@@ -1,24 +1,44 @@
-import { createStyles } from 'antd-style';
+import { createStaticStyles } from 'antd-style';
 
-export const useStyles = createStyles(({ css, token }) => ({
+export const styles = createStaticStyles(({ css, cssVar }) => ({
   card: css`
+    cursor: pointer;
+
     padding: 12px;
-    border: 1px solid ${token.colorBorder};
-    border-radius: ${token.borderRadius}px;
-    background: ${token.colorBgContainer};
+    border: 1px solid ${cssVar.colorBorder};
+    border-radius: ${cssVar.borderRadius};
+
+    background: ${cssVar.colorBgContainer};
+
+    transition:
+      border-color ${cssVar.motionDurationMid},
+      background ${cssVar.motionDurationMid};
+
+    &:hover {
+      border-color: ${cssVar.colorPrimaryHover};
+    }
+
+    &:focus-visible {
+      outline: 2px solid ${cssVar.colorPrimary};
+      outline-offset: 2px;
+    }
   `,
   cardSelected: css`
-    border-color: ${token.colorPrimary};
-    background: ${token.colorPrimaryBg};
+    border-color: ${cssVar.colorPrimary};
+    background: ${cssVar.colorPrimaryBg};
+
+    &:hover {
+      border-color: ${cssVar.colorPrimary};
+    }
   `,
   categoryTag: css`
     font-size: 12px;
-    color: ${token.colorTextTertiary};
+    color: ${cssVar.colorTextTertiary};
   `,
   description: css`
     font-size: 13px;
     line-height: 1.5;
-    color: ${token.colorTextSecondary};
+    color: ${cssVar.colorTextSecondary};
   `,
   footer: css`
     display: flex;
@@ -29,13 +49,24 @@ export const useStyles = createStyles(({ css, token }) => ({
   skipLink: css`
     cursor: pointer;
 
+    display: inline-flex;
+    gap: 4px;
+    align-items: center;
+
+    padding-block: 4px;
+    padding-inline: 0;
+
+    font-size: 13px;
+
+    transition: color ${cssVar.motionDurationMid};
+
     &:hover {
-      text-decoration: underline;
+      color: ${cssVar.colorPrimary} !important;
     }
   `,
   title: css`
     font-size: 14px;
     font-weight: 500;
-    color: ${token.colorText};
+    color: ${cssVar.colorText};
   `,
 }));

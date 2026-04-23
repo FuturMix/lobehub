@@ -2,17 +2,17 @@
 
 import type { BuiltinInterventionProps } from '@lobechat/types';
 import { Button, Flexbox, Text } from '@lobehub/ui';
+import { cx } from 'antd-style';
 import { memo, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { AGENT_TEMPLATES, getTemplatesByCategories } from '../../../data/agent-templates';
 import type { ShowAgentMarketplaceArgs } from '../../../types';
-import { useStyles } from './style';
+import { styles } from './style';
 
 const PickAgentsIntervention = memo<BuiltinInterventionProps<ShowAgentMarketplaceArgs>>(
   ({ args, interactionMode, onInteractionAction }) => {
     const { t } = useTranslation('ui');
-    const { styles, cx } = useStyles();
     const isCustom = interactionMode === 'custom';
 
     const { categoryHints, description, prompt } = args;
@@ -51,6 +51,16 @@ const PickAgentsIntervention = memo<BuiltinInterventionProps<ShowAgentMarketplac
       await onInteractionAction({ type: 'skip' });
     }, [onInteractionAction]);
 
+    const handleCardKeyDown = useCallback(
+      (event: React.KeyboardEvent<HTMLDivElement>, id: string) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          toggle(id);
+        }
+      },
+      [toggle],
+    );
+
     if (!isCustom) {
       return (
         <Flexbox gap={8}>
@@ -81,17 +91,19 @@ const PickAgentsIntervention = memo<BuiltinInterventionProps<ShowAgentMarketplac
             const isSelected = selected.has(tpl.id);
             return (
               <div
+                aria-pressed={isSelected}
                 className={cx(styles.card, isSelected && styles.cardSelected)}
                 key={tpl.id}
                 role="button"
                 tabIndex={0}
                 onClick={() => toggle(tpl.id)}
+                onKeyDown={(event) => handleCardKeyDown(event, tpl.id)}
               >
                 <Flexbox gap={4}>
-                  <div className={styles.title}>
-                    {tpl.avatar ? `${tpl.avatar} ` : ''}
-                    {tpl.title}
-                  </div>
+                  <Flexbox horizontal align="baseline" gap={4}>
+                    {tpl.avatar && <span>{tpl.avatar}</span>}
+                    <span className={styles.title}>{tpl.title}</span>
+                  </Flexbox>
                   <div className={styles.categoryTag}>{tpl.category}</div>
                   <div className={styles.description}>{tpl.description}</div>
                 </Flexbox>
@@ -110,7 +122,7 @@ const PickAgentsIntervention = memo<BuiltinInterventionProps<ShowAgentMarketplac
             type="primary"
             onClick={handleSubmit}
           >
-            {`Confirm (${selected.size})`}
+            {`${t('ok')} (${selected.size})`}
           </Button>
         </div>
       </Flexbox>
