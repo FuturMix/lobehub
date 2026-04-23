@@ -122,7 +122,7 @@ const PickAgentsIntervention = memo<BuiltinInterventionProps<ShowAgentMarketplac
             type="primary"
             onClick={handleSubmit}
           >
-            {`${t('ok')} (${selected.size})`}
+            {`${t('common.confirm')} (${selected.size})`}
           </Button>
         </div>
       </Flexbox>
