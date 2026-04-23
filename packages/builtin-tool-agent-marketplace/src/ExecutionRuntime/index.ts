@@ -82,7 +82,11 @@ export class AgentMarketplaceExecutionRuntime {
   async submitAgentPick(args: SubmitAgentPickArgs): Promise<BuiltinServerRuntimeOutput> {
     const parsed = submitAgentPickSchema.safeParse(args);
     if (!parsed.success) {
-      return { content: `Invalid submitAgentPick args.`, success: false };
+      const issues = parsed.error.issues.map((i) => `${i.path.join('.')}: ${i.message}`);
+      return {
+        content: `Invalid submitAgentPick args:\n${issues.join('\n')}\nPlease regenerate the tool call with the correct schema.`,
+        success: false,
+      };
     }
 
     const { requestId, selectedTemplateIds } = parsed.data;
